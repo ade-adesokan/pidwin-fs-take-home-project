@@ -1,6 +1,8 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/user.js";
+import Token from "../models/token.js";
+
 
 const signup = async (req, res) => {
   const { email, password, confirmPassword, firstName, lastName } = req.body;
@@ -21,6 +23,12 @@ const signup = async (req, res) => {
       password: hashedPassword,
       name: `${firstName} ${lastName}`,
     });
+    
+    await Token.create({
+      userId: result._id,
+      token: 100,
+    });
+
     const token = jwt.sign(
       {
         _id: result._id,
