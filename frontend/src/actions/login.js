@@ -1,4 +1,4 @@
-import { GET_TOKEN, LOGIN, LOGOUT } from "../constants/actionTypes";
+import { SET_TOKEN, LOGIN, LOGOUT } from "../constants/actionTypes";
 import * as api from "../api";
 import * as messages from "../messages";
 
@@ -7,7 +7,7 @@ export const signup = (formData, history) => async (dispatch) => {
     const { data } = await api.signUp(formData);
     dispatch({ type: LOGIN, data });
     const { data: tokenData } = await api.getTokens();
-    dispatch({ type: GET_TOKEN, data: tokenData });
+    dispatch({ type: SET_TOKEN, data: tokenData });
     history("/");
     messages.success("Login Successful");
   } catch (error) {
@@ -20,7 +20,7 @@ export const login = (formData, history) => async (dispatch) => {
     const { data } = await api.login(formData);
     dispatch({ type: LOGIN, data });
     const { data: tokenData } = await api.getTokens();
-    dispatch({ type: GET_TOKEN, data: tokenData });
+    dispatch({ type: SET_TOKEN, data: tokenData });
     history("/");
     messages.success("Login Successful");
   } catch (error) {
