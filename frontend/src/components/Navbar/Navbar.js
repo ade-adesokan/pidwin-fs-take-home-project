@@ -6,12 +6,23 @@ import { jwtDecode } from "jwt-decode";
 import * as actionType from "../../constants/actionTypes";
 import { styles } from "./styles";
 
-const Navbar = () => {
-  const [user, setUser] = useState(
-    localStorage.getItem("profile")
-      ? jwtDecode(JSON.parse(localStorage.getItem("profile")).token)
-      : "null"
-  );
+function getTokenFromLocalStorage() {
+  return localStorage.getItem("token")
+  ? JSON.parse(localStorage.getItem("token")).token
+  : 0
+}
+
+function getUserFromLocalStorage() {
+  return localStorage.getItem("profile")
+  ? jwtDecode(JSON.parse(localStorage.getItem("profile")).token)
+  : "null"
+}
+
+export const Navbar = () => {
+
+  const [user, setUser] = useState(getUserFromLocalStorage());
+  const [token, setToken] = useState(getTokenFromLocalStorage());
+
   const dispatch = useDispatch();
   let location = useLocation();
   const history = useNavigate();
@@ -27,9 +38,10 @@ const Navbar = () => {
       if (user.exp * 1000 < new Date().getTime()) logout();
     }
     setUser(
-      localStorage.getItem("profile")
-        ? jwtDecode(JSON.parse(localStorage.getItem("profile")).token)
-        : "null"
+      getUserFromLocalStorage()
+    );
+    setToken(
+      getTokenFromLocalStorage()
     );
   }, [location]);
 
@@ -54,6 +66,9 @@ const Navbar = () => {
             </Avatar>
             <Typography sx={styles.userName} variant="h6">
               {user.name}
+            </Typography>
+            <Typography sx={styles.userName} variant="h6">
+              {token} Tokens
             </Typography>
             <Button
               variant="contained"
