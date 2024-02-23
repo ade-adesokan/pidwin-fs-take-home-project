@@ -5,6 +5,7 @@ import { applyMiddleware, compose, createStore } from 'redux';
 import reducers from '../../reducers';
 import { thunk } from 'redux-thunk';
 import { BrowserRouter } from 'react-router-dom';
+import jwt from "jsonwebtoken";
 import { when } from 'jest-when';
 
 const store = createStore(reducers, compose(applyMiddleware(thunk)));
@@ -22,8 +23,15 @@ const mockLocalStorage = () => {
   return { getItemMock };
 };
 const { getItemMock } = mockLocalStorage();
-const testToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiJ0ZXN0X2lkIiwibmFtZSI6IlRlc3QgVXNlciIsImVtYWlsIjoidGVzdHVzZXJAeW9wbWFpbC5jb20iLCJpYXQiOjE3MDg2NTY1NTAsImV4cCI6MTcwODY2MDE1MH0.T7R-LiEPPyJgiia3EvwTwwx-izp6QmI6d0Kd9oIXZao"
-
+const testToken = jwt.sign(
+  {
+    _id: 'test_id',
+    name: 'Test User',
+    email: 'testuser@testmail.com',
+  },
+  "test",
+  { expiresIn: "1h" }
+);
 describe('Navbar not authenticated', () => {
   it('Renders Navbar with Login button', () => {
     render(
