@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { AppBar, Typography, Toolbar, Avatar, Button } from "@mui/material";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useDispatch, useStore } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import * as actionType from "../../constants/actionTypes";
 import { styles } from "./styles";
 import { getTokensFromStorage } from "../../utils/getTokensFromStorage";
 import { getUserFromStorage } from "../../utils/getUserFromStorage";
 
 export const Navbar = () => {
-  const store = useStore();
   const [user, setUser] = useState(getUserFromStorage());
   const [token, setToken] = useState(getTokensFromStorage());
+  const tokenData = useSelector(state => {
+    return state.token.tokenData
+  });
 
   const dispatch = useDispatch();
   let location = useLocation();
@@ -21,15 +23,6 @@ export const Navbar = () => {
     history("/auth");
     setUser("null");
   };
-
-  const handleChange = () => {
-    const token = store.getState().token.tokenData?.token;
-    if (token) {
-      setToken(token);
-    }
-  }
-
-  store.subscribe(handleChange)
 
   useEffect(() => {
     if (user !== "null" && user !== null) {
@@ -42,6 +35,12 @@ export const Navbar = () => {
       getTokensFromStorage()
     );
   }, [location]);
+
+  useEffect(() => {
+    if (tokenData) {
+      setToken(tokenData)
+    }
+  }, [tokenData]);
 
   return (
     <AppBar sx={styles.appBar} position="static" color="inherit">

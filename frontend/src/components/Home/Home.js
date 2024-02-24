@@ -3,6 +3,7 @@ import { Box, Container, Grow, Paper, Typography } from "@mui/material";
 import {getUserFromStorage} from '../../utils/getUserFromStorage';
 import {getTokensFromStorage} from '../../utils/getTokensFromStorage'
 import CoinToss from "../CoinToss/CoinToss";
+import TossHistory from "../TossHistory/TossHistory";
 
 const Home = () => {
 
@@ -20,6 +21,7 @@ const Home = () => {
                   {`Welcome ${user.name}`}
                 </Typography>
                 <CoinToss tokens={userTokens}/>
+                <TossHistory />
               </Box>
             ) : (
               <Typography variant="h4" align="center" color="primary">

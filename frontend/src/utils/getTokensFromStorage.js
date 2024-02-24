@@ -1,5 +1,5 @@
 export function getTokensFromStorage() {
-  return localStorage.getItem("token")
-  ? JSON.parse(localStorage.getItem("token")).token
+  return localStorage.getItem("tokens")
+  ? localStorage.getItem("tokens")
   : 0
 }
