@@ -24,9 +24,11 @@ const signup = async (req, res) => {
       name: `${firstName} ${lastName}`,
     });
     
+    // Add entry to token table with initial 100 tokens and 0 winning streak
     await Token.create({
       userId: result._id,
       token: 100,
+      winningStreak: 0,
     });
 
     const token = jwt.sign(

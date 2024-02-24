@@ -26,7 +26,7 @@ const tossCoin = async (req, res) => {
     }
 
     const tokenFilter = {userId: req.userId}
-    const { token } = await Token.findOne(tokenFilter).exec();
+    const { token, winningStreak } = await Token.findOne(tokenFilter).exec();
     
     // wager is more than available tokens
     if (wager > token) {
@@ -40,8 +40,12 @@ const tossCoin = async (req, res) => {
     });
     
     // System tosses coin
-    const serverToss = systemToss(); 
+    const serverToss = systemToss();
     const win = serverToss === toss;
+    // Determine win type
+    console.log(winningStreak, 'winningstreak')
+    const threePointBonusWin = win && winningStreak === 2;
+    const fivePointBonusWin = win && winningStreak === 4;
 
     // Add toss record to database
     await Toss.create({
@@ -51,17 +55,40 @@ const tossCoin = async (req, res) => {
       win,
     });
 
-    // If toss is won, respond with toss value and updated token after win
+    let updateAfterCoinToss = {};
     if (win) {
-      const update = { token: updatedTokenLessWager + ( wager * 2 ) };
-      const {token: updatedToken } = await Token.findOneAndUpdate(tokenFilter, update, {
-        new: true
-      });
-      return res.status(200).json({message:`${serverToss}, you won`, token: updatedToken});
+      // Calculate winning multiplier depending on the win type
+      const winningMultiplier = fivePointBonusWin ? 10 : threePointBonusWin ? 3 : 2;
+      updateAfterCoinToss = { 
+        token: updatedTokenLessWager + ( wager * winningMultiplier ),
+        winningStreak: winningStreak < 5 ? winningStreak + 1 : 1 // We update the winning streak by adding 1 if it is less than 5 otherwise, we set it to 1
+      };
+    } else {
+      updateAfterCoinToss = { 
+        winningStreak: 0 // We update the winning streak to 0 because a loss has happened
+      };
     }
 
-    // toss is lost, respond with toss value and token reflecting loss
-    res.status(200).json({message: `${serverToss}, you lost`, token: updatedTokenLessWager});
+    const {token: updatedToken } = await Token.findOneAndUpdate(tokenFilter, updateAfterCoinToss, {
+      new: true
+    });
+
+    let message;
+    // I chose the traditional conditions over ternary here for readability
+    if (win) {
+      if (fivePointBonusWin) {
+        message = `${serverToss}, winning streak! You won 5x your wager`
+      } else if (threePointBonusWin) {
+        message = `${serverToss}, winning streak! You won 3x your wager`
+      } else {
+        message = `${serverToss}, you won`
+      }
+    } else {
+      message = `${serverToss}, you lost`
+    }
+
+    res.status(200).json({message, token: updatedToken});
+
   } catch (error) {
     res.status(500).json({ message: "Something went wrong" });
   }

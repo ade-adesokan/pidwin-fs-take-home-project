@@ -9,7 +9,6 @@ import { getUserFromStorage } from "../../utils/getUserFromStorage";
 
 export const Navbar = () => {
   const [user, setUser] = useState(getUserFromStorage());
-  const [token, setToken] = useState(getTokensFromStorage());
   const tokenData = useSelector(state => {
     return state.token.tokenData
   });
@@ -31,16 +30,7 @@ export const Navbar = () => {
     setUser(
       getUserFromStorage()
     );
-    setToken(
-      getTokensFromStorage()
-    );
   }, [location]);
-
-  useEffect(() => {
-    if (tokenData) {
-      setToken(tokenData)
-    }
-  }, [tokenData]);
 
   return (
     <AppBar sx={styles.appBar} position="static" color="inherit">
@@ -65,7 +55,7 @@ export const Navbar = () => {
               {user.name}
             </Typography>
             <Typography sx={styles.userName} variant="h6">
-              {token} Tokens
+              {tokenData || getTokensFromStorage()} Tokens
             </Typography>
             <Button
               variant="contained"
