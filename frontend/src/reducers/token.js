@@ -1,8 +1,8 @@
-import { GET_TOKEN } from '../constants/actionTypes';
+import { SET_TOKEN } from '../constants/actionTypes';
 
 const tokenReducer = (state = { tokenData: null }, action) => {
     switch (action.type) {
-        case GET_TOKEN:
+        case SET_TOKEN:
             localStorage.setItem('token', JSON.stringify({ ...action?.data }));
             return { ...state, tokenData: action?.data };
 

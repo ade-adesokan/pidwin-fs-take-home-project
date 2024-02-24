@@ -1,27 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { AppBar, Typography, Toolbar, Avatar, Button } from "@mui/material";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { jwtDecode } from "jwt-decode";
+import { useDispatch, useStore } from "react-redux";
 import * as actionType from "../../constants/actionTypes";
 import { styles } from "./styles";
-
-function getTokenFromLocalStorage() {
-  return localStorage.getItem("token")
-  ? JSON.parse(localStorage.getItem("token")).token
-  : 0
-}
-
-function getUserFromLocalStorage() {
-  return localStorage.getItem("profile")
-  ? jwtDecode(JSON.parse(localStorage.getItem("profile")).token)
-  : "null"
-}
+import { getTokensFromStorage } from "../../utils/getTokensFromStorage";
+import { getUserFromStorage } from "../../utils/getUserFromStorage";
 
 export const Navbar = () => {
-
-  const [user, setUser] = useState(getUserFromLocalStorage());
-  const [token, setToken] = useState(getTokenFromLocalStorage());
+  const store = useStore();
+  const [user, setUser] = useState(getUserFromStorage());
+  const [token, setToken] = useState(getTokensFromStorage());
 
   const dispatch = useDispatch();
   let location = useLocation();
@@ -33,15 +22,24 @@ export const Navbar = () => {
     setUser("null");
   };
 
+  const handleChange = () => {
+    const token = store.getState().token.tokenData?.token;
+    if (token) {
+      setToken(token);
+    }
+  }
+
+  store.subscribe(handleChange)
+
   useEffect(() => {
     if (user !== "null" && user !== null) {
       if (user.exp * 1000 < new Date().getTime()) logout();
     }
     setUser(
-      getUserFromLocalStorage()
+      getUserFromStorage()
     );
     setToken(
-      getTokenFromLocalStorage()
+      getTokensFromStorage()
     );
   }, [location]);
 
