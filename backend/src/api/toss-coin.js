@@ -57,11 +57,11 @@ const tossCoin = async (req, res) => {
       const {token: updatedToken } = await Token.findOneAndUpdate(tokenFilter, update, {
         new: true
       });
-      return res.status(200).json({message: serverToss, token: updatedToken});
+      return res.status(200).json({message:`${serverToss}, you won`, token: updatedToken});
     }
 
     // toss is lost, respond with toss value and token reflecting loss
-    res.status(200).json({message: serverToss, token: updatedTokenLessWager});
+    res.status(200).json({message: `${serverToss}, you lost`, token: updatedTokenLessWager});
   } catch (error) {
     res.status(500).json({ message: "Something went wrong" });
   }
