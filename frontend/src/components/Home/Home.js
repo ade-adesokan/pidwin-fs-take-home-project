@@ -1,13 +1,12 @@
 import React from "react";
 import { Box, Container, Grow, Paper, Typography } from "@mui/material";
 import {getUserFromStorage} from '../../utils/getUserFromStorage';
-import {getTokensFromStorage} from '../../utils/getTokensFromStorage'
 import CoinToss from "../CoinToss/CoinToss";
+import TossHistory from "../TossHistory/TossHistory";
 
 const Home = () => {
 
   const user = getUserFromStorage();
-  const userTokens = getTokensFromStorage();
   const isSignedIn = user;
 
   return (
@@ -19,7 +18,8 @@ const Home = () => {
                 <Typography variant="h4" align="center" color="primary">
                   {`Welcome ${user.name}`}
                 </Typography>
-                <CoinToss tokens={userTokens}/>
+                <CoinToss />
+                <TossHistory />
               </Box>
             ) : (
               <Typography variant="h4" align="center" color="primary">

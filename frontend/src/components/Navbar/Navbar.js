@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { AppBar, Typography, Toolbar, Avatar, Button } from "@mui/material";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useDispatch, useStore } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import * as actionType from "../../constants/actionTypes";
 import { styles } from "./styles";
 import { getTokensFromStorage } from "../../utils/getTokensFromStorage";
 import { getUserFromStorage } from "../../utils/getUserFromStorage";
 
 export const Navbar = () => {
-  const store = useStore();
   const [user, setUser] = useState(getUserFromStorage());
-  const [token, setToken] = useState(getTokensFromStorage());
+  const tokenData = useSelector(state => {
+    return state.token.tokenData
+  });
 
   const dispatch = useDispatch();
   let location = useLocation();
@@ -22,24 +23,12 @@ export const Navbar = () => {
     setUser("null");
   };
 
-  const handleChange = () => {
-    const token = store.getState().token.tokenData?.token;
-    if (token) {
-      setToken(token);
-    }
-  }
-
-  store.subscribe(handleChange)
-
   useEffect(() => {
     if (user !== "null" && user !== null) {
       if (user.exp * 1000 < new Date().getTime()) logout();
     }
     setUser(
       getUserFromStorage()
-    );
-    setToken(
-      getTokensFromStorage()
     );
   }, [location]);
 
@@ -66,7 +55,7 @@ export const Navbar = () => {
               {user.name}
             </Typography>
             <Typography sx={styles.userName} variant="h6">
-              {token} Tokens
+              {tokenData || getTokensFromStorage()} Tokens
             </Typography>
             <Button
               variant="contained"

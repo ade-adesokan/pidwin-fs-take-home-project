@@ -6,8 +6,8 @@ export const signup = (formData, history) => async (dispatch) => {
   try {
     const { data } = await api.signUp(formData);
     dispatch({ type: LOGIN, data });
-    const { data: tokenData } = await api.getTokens();
-    dispatch({ type: SET_TOKEN, data: tokenData });
+    const { data: tokens } = await api.getTokens();
+    dispatch({ type: SET_TOKEN, data: tokens });
     history("/");
     messages.success("Login Successful");
   } catch (error) {
@@ -19,8 +19,8 @@ export const login = (formData, history) => async (dispatch) => {
   try {
     const { data } = await api.login(formData);
     dispatch({ type: LOGIN, data });
-    const { data: tokenData } = await api.getTokens();
-    dispatch({ type: SET_TOKEN, data: tokenData });
+    const { data: tokens } = await api.getTokens();
+    dispatch({ type: SET_TOKEN, data: tokens });
     history("/");
     messages.success("Login Successful");
   } catch (error) {

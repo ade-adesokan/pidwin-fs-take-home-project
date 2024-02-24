@@ -3,7 +3,8 @@ import { useState } from "react";
 import { tossCoin } from "../../actions/tossCoin";
 
 import { styles } from "./styles";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { getTokensFromStorage } from "../../utils/getTokensFromStorage";
 
 const formDataInitVal = {
   wager: 0,
@@ -12,6 +13,10 @@ const formDataInitVal = {
 
 const CoinToss = ({tokens}) => {
   const dispatch = useDispatch();
+  const tokenData = useSelector(state => {
+    return state.token.tokenData
+  });
+
   const [formData, setFormData] = useState(formDataInitVal);
 
   const handleChange = (e) => {
@@ -32,7 +37,7 @@ const CoinToss = ({tokens}) => {
         type="number"
         value={formData.wager}
         onChange={handleChange}
-        InputProps={{ inputProps: { max: tokens } }}
+        InputProps={{ inputProps: { max: tokenData || getTokensFromStorage() } }}
         fullWidth
         autoFocus
         required
