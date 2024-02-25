@@ -30,7 +30,6 @@ const TossHistory = () => {
     }
   }, [tossHistoryData]);
 
-
   return (
     <Box m={3} display="flex" flexDirection="column" alignItems="center">
       <Typography variant="h5" component="h2">Toss History</Typography>
