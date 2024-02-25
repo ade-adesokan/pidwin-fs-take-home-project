@@ -1,6 +1,6 @@
 import { SET_TOKEN } from '../constants/actionTypes';
 
-// It is possible to fetch the token data here and use the value from the backend as the default
+// It may be possible to fetch the token data here and use the value from the backend as the default
 // this way refreshing the app will always use an up-to-date value and there won't be a need to
 // get/set it in localStorage
 

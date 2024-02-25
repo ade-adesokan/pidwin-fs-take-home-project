@@ -6,6 +6,9 @@ const systemToss = () => {
   return Math.floor(Math.random() * 2) <= 0 ? 'head' : 'tail';
 }
 
+// This function can be broken out into smaller pieces
+  // Function that removed the waged amount from the user token
+  // Function that updates the winning streak and the token value to be called if a win happened
 const tossCoin = async (req, res) => {
   const { wager, toss } = req.body;
 
@@ -43,7 +46,6 @@ const tossCoin = async (req, res) => {
     const serverToss = systemToss();
     const win = serverToss === toss;
     // Determine win type
-    console.log(winningStreak, 'winningstreak')
     const threePointBonusWin = win && winningStreak === 2;
     const fivePointBonusWin = win && winningStreak === 4;
 
@@ -59,13 +61,16 @@ const tossCoin = async (req, res) => {
     if (win) {
       // Calculate winning multiplier depending on the win type
       const winningMultiplier = fivePointBonusWin ? 10 : threePointBonusWin ? 3 : 2;
+
+      // We update the token and the winning streak by adding 1 if it is less than 5 otherwise, we set it to 1
       updateAfterCoinToss = { 
         token: updatedTokenLessWager + ( wager * winningMultiplier ),
-        winningStreak: winningStreak < 5 ? winningStreak + 1 : 1 // We update the winning streak by adding 1 if it is less than 5 otherwise, we set it to 1
+        winningStreak: winningStreak < 5 ? winningStreak + 1 : 1
       };
     } else {
+      // We update only the winning streak to 0 because a loss has happened
       updateAfterCoinToss = { 
-        winningStreak: 0 // We update the winning streak to 0 because a loss has happened
+        winningStreak: 0
       };
     }
 

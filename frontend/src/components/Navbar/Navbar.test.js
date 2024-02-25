@@ -49,7 +49,7 @@ describe('Navbar not authenticated', () => {
 
 describe('Navbar authenticated', () => {
   beforeEach(() => {
-    when(getItemMock).calledWith('token').mockReturnValue('{"token":100}');
+    when(getItemMock).calledWith('tokens').mockReturnValue(100);
     when(getItemMock).calledWith('profile').mockReturnValue(`{"token": "${testToken}"}`);
   })
 
